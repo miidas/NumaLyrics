@@ -63,9 +63,9 @@ namespace NumaLyrics
             set { updateAppSetting("DisplayPositionY", value.ToString("F3")); }
         }
 
-        public static long LyricsTimeOffset
+        public static int LyricsTimeOffset
         {
-            get { return long.Parse(ConfigurationManager.AppSettings["LyricsTimeOffsetMS"]); }
+            get { return int.Parse(ConfigurationManager.AppSettings["LyricsTimeOffsetMS"]); }
             set { updateAppSetting("LyricsTimeOffsetMS", value.ToString()); }
         }
 

@@ -55,7 +55,7 @@ namespace NumaLyrics.Forms
             InitializeTimer();
         }
 
-        private void OnPlayerPlay(dynamic track)
+        private void OnPlayerPlay(object trackObj)
         {
             this.Invoke(new MethodInvoker(delegate
             {
@@ -64,7 +64,7 @@ namespace NumaLyrics.Forms
             }));
         }
 
-        private void OnPlayerStop(dynamic track)
+        private void OnPlayerStop(object trackObj)
         {
             this.Invoke(new MethodInvoker(delegate
             {
@@ -72,9 +72,11 @@ namespace NumaLyrics.Forms
             }));
         }
 
-        private void OnPlayerTrackChanged(dynamic track)
+        private void OnPlayerTrackChanged(object trackObj)
         {
-            if (track == null)
+            lyricsDisplay.OnTrackChanged(trackObj);
+
+            if (trackObj == null)
             {
                 this.Invoke(new MethodInvoker(delegate
                 {
@@ -84,6 +86,8 @@ namespace NumaLyrics.Forms
                 }));
                 return;
             }
+
+            dynamic track = trackObj;
 
 #if DEBUG
             Logger.Debug("============== Track ==============");
@@ -139,10 +143,14 @@ namespace NumaLyrics.Forms
         {
             if (!itunes.IsPlaying) return;
 
-            var position = (dynamic)itunes.getPlayerPositionMS();
-            if (position != null)
+            var positionObj = itunes.getPlayerPositionMS();
+            if (positionObj != null)
             {
+                int position = (int)positionObj;
+
                 lyricsDisplay.OnChangePlayerPosition(position);
+
+                //Logger.Trace(position);
             }
         }
 
@@ -158,12 +166,12 @@ namespace NumaLyrics.Forms
 
         private void editLrcToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (itunes.CurrentTrack != null)
+            if (itunes.CurrentTrackObj != null)
             {
                 var form = new LyricsEditForm(this.lrcPath);
                 form.FormClosed += (cs, ce) =>
                 {
-                    OnPlayerTrackChanged(itunes.CurrentTrack);
+                    OnPlayerTrackChanged(itunes.CurrentTrackObj);
                 };
                 form.ShowDialog(this);
             }

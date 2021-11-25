@@ -66,7 +66,7 @@ namespace NumaLyrics.Forms
 
         private void timeOffset_ValueChanged(object sender, EventArgs e)
         {
-            AppConfig.LyricsTimeOffset = (long)timeOffset.Value;
+            AppConfig.LyricsTimeOffset = (int)timeOffset.Value;
         }
 
         private void fontSelectButton_Click(object sender, EventArgs e)

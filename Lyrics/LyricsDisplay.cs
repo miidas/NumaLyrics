@@ -6,9 +6,11 @@ namespace NumaLyrics.Lyrics
 {
     class LyricsDisplay
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private static readonly LyricsDisplay instance = new LyricsDisplay();
 
-        private long LyricsTimeOffset;
+        private int LyricsTimeOffset;
 
         private ILrcFile lrcFile = null;
 
@@ -29,7 +31,7 @@ namespace NumaLyrics.Lyrics
             this.LyricsTimeOffset = AppConfig.LyricsTimeOffset;
         }
 
-        public void OnChangePlayerPosition(long position)
+        public void OnChangePlayerPosition(int position)
         {
             if (lrcFile == null) return;
 
@@ -58,22 +60,35 @@ namespace NumaLyrics.Lyrics
 
             IOneLineLyric lineLyric = lrcFile.Before(TimeSpan.FromMilliseconds(position));
 
-            if (lineLyric == null) return;
-
-            IOneLineLyric lineLyric2 = lrcFile.After(lineLyric.Timestamp);
-
-            if (this.currentLyricsWindow != null)
+            if (lineLyric == null)
             {
-                if (lineLyric.Timestamp == this.currentLyric.Timestamp) return;
-                if (!String.Equals(lineLyric.Content, this.currentLyric.Content))
+                if (this.currentLyricsWindow != null)
                 {
-                    this.currentLyricsWindow.Hide();
-                    this.currentLyricsWindow.Dispose();
-                    this.currentLyricsWindow = null;
+                    ClearLyrics();
+                }
+                return;
+            }
+            else
+            {
+                if (this.currentLyric != null && 
+                    lineLyric.Timestamp == this.currentLyric.Timestamp)
+                {
+                    return;
                 }
             }
 
+            Logger.Debug("lineLyric: {time} : {text}", lineLyric.Timestamp, lineLyric.Content);
+
+            IOneLineLyric lineLyric2 = lrcFile.After(lineLyric.Timestamp);
+
             this.currentLyric = lineLyric;
+
+            if (this.currentLyricsWindow != null)
+            {
+                this.currentLyricsWindow.Hide();
+                this.currentLyricsWindow.Dispose();
+                this.currentLyricsWindow = null;
+            }
 
             if (String.IsNullOrEmpty(lineLyric.Content))
             {
@@ -85,22 +100,19 @@ namespace NumaLyrics.Lyrics
             }
             else
             {
-                if (this.currentLyricsWindow == null)
+                if (this.nextLyricsWindow != null)
                 {
-                    if (this.nextLyricsWindow != null)
-                    {
-                        this.currentLyricsWindow = this.nextLyricsWindow;
-                        this.nextLyricsWindow = null;
-                    }
-                    else
-                    {
-                        this.currentLyricsWindow = new LayeredLyricsWindow(currentLyric.Content);
-                    }
+                    this.currentLyricsWindow = this.nextLyricsWindow;
+                    this.nextLyricsWindow = null;
+                }
+                else
+                {
+                    this.currentLyricsWindow = new LayeredLyricsWindow(currentLyric.Content);
+                }
 
-                    if (this.EnableLyrics)
-                    {
-                        this.currentLyricsWindow.Show();
-                    }
+                if (this.EnableLyrics)
+                {
+                    this.currentLyricsWindow.Show();
                 }
 
                 if (lineLyric2 != null && !String.IsNullOrEmpty(lineLyric2.Content) &&
@@ -127,12 +139,7 @@ namespace NumaLyrics.Lyrics
             this.lrcFile = lrcFile;
         }
 
-        public void OnTrackChanged(object track)
-        {
-            this.ClearLyrics();
-        }
-
-        public void OnChangePlayerPositionByUser()
+        public void OnTrackChanged(object trackObj)
         {
             this.ClearLyrics();
         }

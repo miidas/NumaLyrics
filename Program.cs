@@ -50,9 +50,11 @@ namespace NumaLyrics
             {
                 Layout = @"${longdate}|${level}|${logger}|${message} ${exception:format=tostring}"
             };
+#if DEBUG
             var consoleRule = new NLog.Config.LoggingRule("*", LogLevel.Trace, consoleTarget);
             config.AddTarget("console", consoleTarget);
             config.LoggingRules.Add(consoleRule);
+#endif
             NLog.LogManager.Configuration = config;
         }
 

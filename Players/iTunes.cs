@@ -16,44 +16,49 @@ namespace NumaLyrics.Players
 
         private delegate void GenericEventHandler();
 
-        public delegate void TrackEventHandler(dynamic track);
+        public delegate void TrackEventHandler(object trackObj);
 
         public TrackEventHandler OnPlayerPlay = null;
         public TrackEventHandler OnPlayerStop = null;
         public TrackEventHandler OnPlayerTrackChanged = null;
 
-        private dynamic iTunesApp;
+        private object itunesCOMObj;
 
         private bool disposed = false;
         private bool playing = false;
-        private dynamic currentTrack = null;
+        private object currentTrackObj = null;
 
         public iTunes()
         {
             Type iTunesType = Type.GetTypeFromProgID("iTunes.Application");
-            this.iTunesApp = Activator.CreateInstance(iTunesType);
+            this.itunesCOMObj = Activator.CreateInstance(iTunesType);
 
-            this.playing = this.getPlayerState() != 0;
-            this.currentTrack = this.getCurrentTrack();
+            this.playing = getPlayerState() != 0;
+            this.currentTrackObj = getCurrentTrack();
 
-            iTunesApp.OnPlayerPlayEvent += new TrackEventHandler(_OnPlayerPlay);
-            iTunesApp.OnPlayerStopEvent += new TrackEventHandler(_OnPlayerStop);
-            iTunesApp.OnPlayerPlayingTrackChangedEvent += new TrackEventHandler(_OnPlayerPlayingTrackChanged);
-            iTunesApp.OnAboutToPromptUserToQuitEvent += new GenericEventHandler(iTunesQuitEvent);
+            dynamic itunesCOM = itunesCOMObj;
+
+            itunesCOM.OnPlayerPlayEvent += new TrackEventHandler(_OnPlayerPlay);
+            itunesCOM.OnPlayerStopEvent += new TrackEventHandler(_OnPlayerStop);
+            itunesCOM.OnPlayerPlayingTrackChangedEvent += new TrackEventHandler(_OnPlayerPlayingTrackChanged);
+            itunesCOM.OnAboutToPromptUserToQuitEvent += new GenericEventHandler(iTunesQuitEvent);
 
             this.OnPlayerTrackChanged += _OnPlayerTrackChanged;
 
 #if DEBUG
             Logger.Debug("============== iTunes ==============");
-            foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(this.iTunesApp))
+            foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(itunesCOM))
             {
-                Logger.Debug("{key}: {value}", prop.Name, prop.GetValue(this.iTunesApp));
+                Logger.Debug("{key}: {value}", prop.Name, prop.GetValue(itunesCOM));
             }
 #endif
         }
 
-        private void _OnPlayerPlay(dynamic track)
-        {   
+        private void _OnPlayerPlay(object trackObj)
+        {
+            dynamic track = trackObj;
+            dynamic currentTrack = currentTrackObj;
+
             if (currentTrack == null || currentTrack.TrackDatabaseID != track.TrackDatabaseID)
             {
                 this.OnPlayerTrackChanged(track);
@@ -61,35 +66,44 @@ namespace NumaLyrics.Players
 
             Logger.Debug("{0}: {1}", MethodBase.GetCurrentMethod().Name, track.Name);
 
-            this.currentTrack = track;
+            this.currentTrackObj = trackObj;
             this.playing = true;
             this.OnPlayerPlay(track);
         }
 
-        private void _OnPlayerStop(dynamic track)
+        private void _OnPlayerStop(object trackObj)
         {
+            dynamic track = trackObj;
+
             Logger.Debug("{0}: {1}", MethodBase.GetCurrentMethod().Name, track.Name);
-            this.currentTrack = track;
+
+            this.currentTrackObj = trackObj;
             this.playing = false;
             this.OnPlayerStop(track);
 
             if (getCurrentTrack() == null)
             {
-                this.currentTrack = null;
+                this.currentTrackObj = null;
                 this.OnPlayerTrackChanged(null);
             }
         }
 
-        private void _OnPlayerTrackChanged(dynamic track)
+        private void _OnPlayerTrackChanged(object trackObj)
         {
+            dynamic track = trackObj;
+
             if (track == null) return;
+
             Logger.Debug("{0}: {1}", MethodBase.GetCurrentMethod().Name, track.Name);
         }
 
-        private void _OnPlayerPlayingTrackChanged(dynamic track)
+        private void _OnPlayerPlayingTrackChanged(object trackObj)
         {
+            dynamic track = trackObj;
+
             Logger.Debug("{0}: {1}", MethodBase.GetCurrentMethod().Name, track.Name);
-            this.currentTrack = track;
+
+            this.currentTrackObj = trackObj;
         }
 
         private void iTunesQuitEvent()
@@ -101,9 +115,10 @@ namespace NumaLyrics.Players
 
         public object getCurrentTrack()
         {
+            dynamic itunesCOM = itunesCOMObj;
             try
             {
-                return iTunesApp.CurrentTrack;
+                return itunesCOM.CurrentTrack;
             }
             catch (COMException)
             {
@@ -113,9 +128,10 @@ namespace NumaLyrics.Players
 
         public object getPlayerPosition()
         {
+            dynamic itunesCOM = itunesCOMObj;
             try
             {
-                return iTunesApp.PlayerPosition;
+                return itunesCOM.PlayerPosition;
             }
             catch (COMException)
             {
@@ -126,12 +142,14 @@ namespace NumaLyrics.Players
         // Undocumented API
         public object getPlayerPositionMS()
         {
+            dynamic itunesCOM = itunesCOMObj;
+
             // Force update
-            iTunesApp.Resume();
+            itunesCOM.Resume();
 
             try
             {
-                return iTunesApp.PlayerPositionMS;
+                return itunesCOM.PlayerPositionMS;
             }
             catch (COMException)
             {
@@ -141,12 +159,14 @@ namespace NumaLyrics.Players
 
         public int getPlayerState()
         {
-            return iTunesApp.PlayerState;
+            dynamic itunesCOM = itunesCOMObj;
+            return itunesCOM.PlayerState;
         }
 
         public object getVersion()
         {
-            return iTunesApp.Version;
+            dynamic itunesCOM = itunesCOMObj;
+            return itunesCOM.Version;
         }
 
         public void Dispose()
@@ -154,8 +174,8 @@ namespace NumaLyrics.Players
             if (!disposed)
             {
                 // Release the COM object
-                Marshal.ReleaseComObject(this.iTunesApp);
-                this.iTunesApp = null;
+                Marshal.ReleaseComObject(this.itunesCOMObj);
+                this.itunesCOMObj = null;
 
                 disposed = true;
             }
@@ -169,11 +189,11 @@ namespace NumaLyrics.Players
             }
         }
 
-        public dynamic CurrentTrack
+        public object CurrentTrackObj
         {
             get
             {
-                return currentTrack;
+                return currentTrackObj;
             }
         }
 
