@@ -36,6 +36,8 @@ namespace NumaLyrics.Forms
             {
                 Logger.Error(ex);
             }
+
+            SetDesktopLocation(Cursor.Position.X, Cursor.Position.Y);
         }
 
         private void SaveLrcFile()

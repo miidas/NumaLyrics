@@ -36,6 +36,8 @@ namespace NumaLyrics.Forms
             timeOffset.Value = (decimal)AppConfig.LyricsTimeOffset;
             timeOffset.ValueChanged += timeOffset_ValueChanged;
 
+            SetDesktopLocation(Cursor.Position.X, Cursor.Position.Y);
+
             this.previewLyricsWindow = new LayeredLyricsWindow("This is a sample text / サンプルテキストです");
             this.previewLyricsWindow.Show();
         }
