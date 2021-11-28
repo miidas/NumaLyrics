@@ -83,15 +83,17 @@ namespace NumaLyrics.Lyrics
 
             this.currentLyric = lineLyric;
 
-            if (this.currentLyricsWindow != null)
-            {
-                this.currentLyricsWindow.Hide();
-                this.currentLyricsWindow.Dispose();
-                this.currentLyricsWindow = null;
-            }
+            var tmpWindow = this.currentLyricsWindow;
 
             if (String.IsNullOrEmpty(lineLyric.Content))
             {
+                if (this.currentLyricsWindow != null)
+                {
+                    this.currentLyricsWindow.Hide();
+                    this.currentLyricsWindow.Dispose();
+                    this.currentLyricsWindow = null;
+                }
+
                 if (this.nextLyricsWindow == null &&
                     lineLyric2 != null && !String.IsNullOrEmpty(lineLyric2.Content))
                 {
@@ -113,6 +115,11 @@ namespace NumaLyrics.Lyrics
                 if (this.EnableLyrics)
                 {
                     this.currentLyricsWindow.Show();
+                    if (tmpWindow != null)
+                    {
+                        tmpWindow.Hide();
+                        tmpWindow.Dispose();
+                    }
                 }
 
                 if (lineLyric2 != null && !String.IsNullOrEmpty(lineLyric2.Content) &&
