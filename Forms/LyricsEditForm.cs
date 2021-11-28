@@ -37,6 +37,8 @@ namespace NumaLyrics.Forms
                 Logger.Error(ex);
             }
 
+            this.lrcTextBox.LanguageOption = RichTextBoxLanguageOptions.UIFonts;
+
             SetDesktopLocation(Cursor.Position.X, Cursor.Position.Y);
         }
 
