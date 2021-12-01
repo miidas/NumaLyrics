@@ -63,10 +63,16 @@ namespace NumaLyrics
             set { updateAppSetting("DisplayPositionY", value.ToString("F3")); }
         }
 
-        public static int LyricsTimeOffset
+        public static int LyricsTimeOffsetMS
         {
             get { return int.Parse(ConfigurationManager.AppSettings["LyricsTimeOffsetMS"]); }
             set { updateAppSetting("LyricsTimeOffsetMS", value.ToString()); }
+        }
+
+        public static bool EnableNowPlayingFeature
+        {
+            get { return bool.Parse(ConfigurationManager.AppSettings["EnableNowPlayingFeature"]); }
+            set { updateAppSetting("EnableNowPlayingFeature", value.ToString()); }
         }
 
         private static void updateAppSetting(string key, string value)

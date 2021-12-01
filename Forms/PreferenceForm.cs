@@ -33,8 +33,10 @@ namespace NumaLyrics.Forms
             displayXPos.ValueChanged += displayXPos_ValueChanged;
             displayYPos.Value = (decimal)AppConfig.DisplayPositionY;
             displayYPos.ValueChanged += displayYPos_ValueChanged;
-            timeOffset.Value = (decimal)AppConfig.LyricsTimeOffset;
+            timeOffset.Value = (decimal)AppConfig.LyricsTimeOffsetMS;
             timeOffset.ValueChanged += timeOffset_ValueChanged;
+
+            nowPlayingCheckBox.Checked = AppConfig.EnableNowPlayingFeature;
 
             SetDesktopLocation(Cursor.Position.X, Cursor.Position.Y);
 
@@ -68,7 +70,7 @@ namespace NumaLyrics.Forms
 
         private void timeOffset_ValueChanged(object sender, EventArgs e)
         {
-            AppConfig.LyricsTimeOffset = (int)timeOffset.Value;
+            AppConfig.LyricsTimeOffsetMS = (int)timeOffset.Value;
         }
 
         private void fontSelectButton_Click(object sender, EventArgs e)
@@ -114,6 +116,11 @@ namespace NumaLyrics.Forms
                 AppConfig.FontOutlineColor = ColorTranslator.ToHtml(dialog.Color);
                 this.previewLyricsWindow.Redraw();
             }
+        }
+
+        private void nowPlayingCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            AppConfig.EnableNowPlayingFeature = nowPlayingCheckBox.Checked;
         }
 
         private void PreferenceForm_FormClosing(object sender, FormClosingEventArgs e)

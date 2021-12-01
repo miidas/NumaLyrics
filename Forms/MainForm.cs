@@ -52,6 +52,8 @@ namespace NumaLyrics.Forms
 
             OnPlayerTrackChanged(itunes.getCurrentTrack());
 
+            updateMenuStrip();
+
             InitializeTimer();
         }
 
@@ -184,6 +186,7 @@ namespace NumaLyrics.Forms
             form.FormClosed += (cs, ce) => {
                 lyricsDisplay.LoadConfig();
                 lyricsDisplay.ClearLyrics(); // Clear cache
+                updateMenuStrip();
                 if (showLyricsCheckBox.Checked) lyricsDisplay.ShowLyrics();
             };
             form.ShowDialog(this);
@@ -238,5 +241,40 @@ namespace NumaLyrics.Forms
                 this.notifyIcon.Visible = false;
             }
         }
+
+        private void updateMenuStrip()
+        {
+            ToolStripMenuItem npMenuItem = null;
+            foreach (ToolStripMenuItem i in menuStrip.Items)
+            {
+                if (i.Text == "NowPlaying")
+                {
+                    npMenuItem = i;
+                }
+            }
+
+            if (AppConfig.EnableNowPlayingFeature)
+            {
+                if (npMenuItem == null)
+                {
+                    var item = new ToolStripMenuItem("NowPlaying");
+                    item.Click += (es, ee) =>
+                    {
+                        var tweetText = $"#Nowplaying {this.titleTextBox.Text} - {this.artistTextBox.Text} ({this.albumTextBox.Text})";
+                        System.Diagnostics.Process.Start("https://twitter.com/intent/tweet?text=" + System.Net.WebUtility.UrlEncode(tweetText));
+                    };
+                    menuStrip.Items.Insert(1, item);
+                }
+            }
+            else
+            {
+                if (npMenuItem != null)
+                {
+                    menuStrip.Items.Remove(npMenuItem);
+                }
+            }
+        }
+
+
     }
 }

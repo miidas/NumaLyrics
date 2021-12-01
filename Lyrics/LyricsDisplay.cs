@@ -28,7 +28,7 @@ namespace NumaLyrics.Lyrics
 
         public void LoadConfig()
         {
-            this.LyricsTimeOffset = AppConfig.LyricsTimeOffset;
+            this.LyricsTimeOffset = AppConfig.LyricsTimeOffsetMS;
         }
 
         public void OnChangePlayerPosition(int position)
