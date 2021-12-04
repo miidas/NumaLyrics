@@ -253,6 +253,16 @@ namespace NumaLyrics.Forms
             // timeOffset
             // 
             this.timeOffset.Location = new System.Drawing.Point(8, 21);
+            this.timeOffset.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.timeOffset.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
             this.timeOffset.Name = "timeOffset";
             this.timeOffset.Size = new System.Drawing.Size(78, 20);
             this.timeOffset.TabIndex = 1;
