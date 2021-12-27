@@ -30,7 +30,7 @@ namespace NumaLyrics.Models
         private volatile int notifyCounter = 0;
         private LayeredLyricsWindow notifyWindow = new LayeredLyricsWindow(0.5f, 0.5f, 32f);
 
-        public void handleWndProc(ref Message m)
+        public void HandleWndProc(ref Message m)
         {
             if (m.Msg == WM_DEVICECHANGE)
             {

@@ -64,7 +64,7 @@ namespace NumaLyrics.Forms
 
         protected override void WndProc(ref Message m)
         {
-            controllerDevice.handleWndProc(ref m);
+            controllerDevice.HandleWndProc(ref m);
             base.WndProc(ref m);
         }
 
