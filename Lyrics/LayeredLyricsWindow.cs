@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using static NumaLyrics.Utils.Native.GDI32;
@@ -17,7 +13,7 @@ namespace NumaLyrics.Lyrics
     {
         private static float gDpiY = -1;
 
-        public string lyricsText;
+        public string LyricsText;
 
         private Bitmap bitmap;
         //private float gDpiY;
@@ -36,9 +32,22 @@ namespace NumaLyrics.Lyrics
         private float DisplayPositionX;
         private float DisplayPositionY;
 
+        private bool PreConfigured;
+
+        public LayeredLyricsWindow(float posX, float posY, float fontSize)
+        {
+            this.PreConfigured = true;
+            Initialize(null, posX, posY, fontSize);
+        }
+
         public LayeredLyricsWindow(string str)
         {
-            this.lyricsText = str;
+            Initialize(str, null, null, null);
+        }
+
+        private void Initialize(string str, float? posX, float? posY, float? fontSize)
+        {
+            this.LyricsText = str;
             this.FormBorderStyle = FormBorderStyle.None;
             this.StartPosition = FormStartPosition.Manual;
 
@@ -51,8 +60,19 @@ namespace NumaLyrics.Lyrics
                 }
             }
 
+            if (posX.HasValue && posY.HasValue)
+            {
+                this.DisplayPositionX = posX.Value;
+                this.DisplayPositionY = posY.Value;
+            }
+
+            if (fontSize.HasValue)
+            {
+                this.FontSize = fontSize.Value;
+            }
+
             this.LoadConfig(); // 0ms
-            this.PerformDraw(); // 6~10ms
+            if (str != null) this.PerformDraw(); // 6~10ms
         }
 
         public void Redraw()
@@ -97,7 +117,7 @@ namespace NumaLyrics.Lyrics
                 RectangleF spaceBound = gp.GetBounds();
                 gp.Reset();
 
-                gp.AddString(this.lyricsText, fontFamily, FontStyle, gDpiY * FontSize / 72f, new Point(0, 0), sf);
+                gp.AddString(this.LyricsText, fontFamily, FontStyle, gDpiY * FontSize / 72f, new Point(0, 0), sf);
 
                 RectangleF rect = gp.GetBounds();
 
@@ -192,15 +212,19 @@ namespace NumaLyrics.Lyrics
 
         public void LoadConfig()
         {
+            if (!PreConfigured) this.FontSize = AppConfig.FontSize;
             this.FontFamily = AppConfig.FontFamily;
-            this.FontSize = AppConfig.FontSize;
             this.FontStyle = AppConfig.FontStyle;
             this.FontColor = AppConfig.FontColor;
             this.FontOutlineColor = AppConfig.FontOutlineColor;
             this.FontOutlineWidth = AppConfig.FontOutlineWidth;
             this.DisplayIndex = AppConfig.DisplayIndex;
-            this.DisplayPositionX = AppConfig.DisplayPositionX;
-            this.DisplayPositionY = AppConfig.DisplayPositionY;
+
+            if (!PreConfigured)
+            {
+                this.DisplayPositionX = AppConfig.DisplayPositionX;
+                this.DisplayPositionY = AppConfig.DisplayPositionY;
+            }
         }
     }
 }

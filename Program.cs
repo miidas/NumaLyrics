@@ -3,12 +3,8 @@ using NLog;
 using NumaLyrics.Forms;
 using NumaLyrics.Players;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using static NumaLyrics.Utils.Native;
@@ -31,7 +27,6 @@ namespace NumaLyrics
 
 #if DEBUG
             CreateConsole();
-            DeleteMenu(GetSystemMenu(GetConsoleWindow(), false), SC_CLOSE, MF_BYCOMMAND);
             Logger.Debug("*** DEBUG MODE ***");
 #endif
 
@@ -70,12 +65,55 @@ namespace NumaLyrics
         private static void CreateConsole()
         {
             AllocConsole();
-            var handle = CreateFileW("CONOUT$", GENERIC_WRITE, FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
-            var safeHandle = new SafeFileHandle(handle, true);
-            SetStdHandle(STD_OUTPUT_HANDLE, safeHandle);
-            var fileStream = new FileStream(safeHandle, FileAccess.Write);
-            var streamWriter = new StreamWriter(fileStream, Console.OutputEncoding) { AutoFlush = true };
-            Console.SetOut(streamWriter);
+
+            var conOut = CreateFileW(
+                "CONOUT$",
+                GENERIC_READ | GENERIC_WRITE,
+                FILE_SHARE_WRITE,
+                IntPtr.Zero,
+                OPEN_EXISTING,
+                0,
+                IntPtr.Zero
+            );
+
+            var conOutHnd = new SafeFileHandle(conOut, true);
+            SetStdHandle(STD_OUTPUT_HANDLE, conOutHnd);
+
+            Console.SetOut(
+                new StreamWriter(
+                    new FileStream(conOutHnd, FileAccess.Write), 
+                    Console.OutputEncoding
+                ) { AutoFlush = true }
+            );
+
+            var conIn = CreateFileW(
+                "CONIN$",
+                GENERIC_READ | GENERIC_WRITE,
+                FILE_SHARE_READ,
+                IntPtr.Zero,
+                OPEN_EXISTING,
+                0,
+                IntPtr.Zero
+            );
+
+            var conInHnd = new SafeFileHandle(conIn, true);
+            SetStdHandle(STD_INPUT_HANDLE, conInHnd);
+
+            Console.SetIn(
+                new StreamReader(
+                    new FileStream(conInHnd, FileAccess.Read),
+                    Console.OutputEncoding
+                )
+            );
+
+            // Disable the close button
+            DeleteMenu(GetSystemMenu(GetConsoleWindow(), false), SC_CLOSE, MF_BYCOMMAND);
+
+            // Disable the quick edit mode
+            uint conMode;
+            GetConsoleMode(conIn, out conMode);
+            conMode &= ~ENABLE_QUICK_EDIT_MODE;
+            SetConsoleMode(conIn, conMode);
         }
     }
 }

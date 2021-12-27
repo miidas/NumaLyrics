@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NumaLyrics.Forms
@@ -30,7 +23,7 @@ namespace NumaLyrics.Forms
 
             try
             {
-                this.lrcTextBox.Text = System.IO.File.ReadAllText(this.lrcFilePath);
+                this.lrcTextBox.Text = File.ReadAllText(this.lrcFilePath);
             }
             catch (Exception ex)
             {
@@ -38,8 +31,6 @@ namespace NumaLyrics.Forms
             }
 
             this.lrcTextBox.LanguageOption = RichTextBoxLanguageOptions.UIFonts;
-
-            SetDesktopLocation(Cursor.Position.X, Cursor.Position.Y);
         }
 
         private void SaveLrcFile()

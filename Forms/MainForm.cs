@@ -1,5 +1,6 @@
 ﻿using Kfstorm.LrcParser;
 using NumaLyrics.Lyrics;
+using NumaLyrics.Models;
 using NumaLyrics.Players;
 using System;
 using System.ComponentModel;
@@ -12,7 +13,7 @@ namespace NumaLyrics.Forms
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private iTunes itunes = iTunes.GetInstance();
+        private static readonly iTunes itunes = iTunes.GetInstance();
 
         private LyricsDisplay lyricsDisplay = LyricsDisplay.GetInstance();
 
@@ -21,6 +22,8 @@ namespace NumaLyrics.Forms
         private string lyricsDirectory;
 
         private string lrcPath;
+
+        private ControllerDevice controllerDevice = new ControllerDevice();
 
         public MainForm()
         {
@@ -32,7 +35,7 @@ namespace NumaLyrics.Forms
             this.ActiveControl = titleLabel;
             this.notifyIcon.Icon = this.Icon;
 
-            lyricsDirectory = System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\Lyrics";
+            lyricsDirectory = Path.GetDirectoryName(Application.ExecutablePath) + "\\Lyrics";
             Logger.Trace("lyricsDirectory: {dir}", lyricsDirectory);
             if (!Directory.Exists(lyricsDirectory))
             {
@@ -54,7 +57,15 @@ namespace NumaLyrics.Forms
 
             updateMenuStrip();
 
+            controllerDevice.InitializeSerialController();
+
             InitializeTimer();
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            controllerDevice.handleWndProc(ref m);
+            base.WndProc(ref m);
         }
 
         private void OnPlayerPlay(object trackObj)
@@ -76,7 +87,10 @@ namespace NumaLyrics.Forms
 
         private void OnPlayerTrackChanged(object trackObj)
         {
-            lyricsDisplay.OnTrackChanged(trackObj);
+            this.Invoke(new MethodInvoker(delegate
+            {
+                lyricsDisplay.OnTrackChanged(trackObj);
+            }));
 
             if (trackObj == null)
             {
@@ -113,7 +127,7 @@ namespace NumaLyrics.Forms
                     + String.Join(
                         "_",
                         $"{track.Name} - {track.Artist}.lrc"
-                        .Split(System.IO.Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries)
+                        .Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries)
                         )
                     .TrimEnd('.');
                 Logger.Debug("Lrc path: {path}", this.lrcPath);
@@ -275,6 +289,9 @@ namespace NumaLyrics.Forms
             }
         }
 
-
+        public ControllerDevice GetControllerDevice()
+        {
+            return controllerDevice;
+        }
     }
 }

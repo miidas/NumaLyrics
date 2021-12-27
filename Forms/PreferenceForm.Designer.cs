@@ -48,6 +48,10 @@ namespace NumaLyrics.Forms
             this.lyricsTabPage = new System.Windows.Forms.TabPage();
             this.timeOffset = new System.Windows.Forms.NumericUpDown();
             this.timeOffsetLabel = new System.Windows.Forms.Label();
+            this.controllerTabPage = new System.Windows.Forms.TabPage();
+            this.controllerEditorButton = new System.Windows.Forms.Button();
+            this.comComboBox = new System.Windows.Forms.ComboBox();
+            this.comLabel = new System.Windows.Forms.Label();
             this.featuresTabPage = new System.Windows.Forms.TabPage();
             this.nowPlayingCheckBox = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
@@ -61,6 +65,7 @@ namespace NumaLyrics.Forms
             ((System.ComponentModel.ISupportInitialize)(this.displayIndex)).BeginInit();
             this.lyricsTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeOffset)).BeginInit();
+            this.controllerTabPage.SuspendLayout();
             this.featuresTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -69,11 +74,12 @@ namespace NumaLyrics.Forms
             this.tabControl.Controls.Add(this.fontTabPage);
             this.tabControl.Controls.Add(this.displayTabPage);
             this.tabControl.Controls.Add(this.lyricsTabPage);
+            this.tabControl.Controls.Add(this.controllerTabPage);
             this.tabControl.Controls.Add(this.featuresTabPage);
             this.tabControl.Location = new System.Drawing.Point(3, 3);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(282, 83);
+            this.tabControl.Size = new System.Drawing.Size(336, 120);
             this.tabControl.TabIndex = 0;
             // 
             // fontTabPage
@@ -88,7 +94,7 @@ namespace NumaLyrics.Forms
             this.fontTabPage.Location = new System.Drawing.Point(4, 22);
             this.fontTabPage.Name = "fontTabPage";
             this.fontTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.fontTabPage.Size = new System.Drawing.Size(274, 57);
+            this.fontTabPage.Size = new System.Drawing.Size(328, 94);
             this.fontTabPage.TabIndex = 0;
             this.fontTabPage.Text = "Font";
             this.fontTabPage.UseVisualStyleBackColor = true;
@@ -174,7 +180,7 @@ namespace NumaLyrics.Forms
             this.displayTabPage.Location = new System.Drawing.Point(4, 22);
             this.displayTabPage.Name = "displayTabPage";
             this.displayTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.displayTabPage.Size = new System.Drawing.Size(274, 57);
+            this.displayTabPage.Size = new System.Drawing.Size(328, 94);
             this.displayTabPage.TabIndex = 1;
             this.displayTabPage.Text = "Display";
             this.displayTabPage.UseVisualStyleBackColor = true;
@@ -245,7 +251,7 @@ namespace NumaLyrics.Forms
             this.lyricsTabPage.Controls.Add(this.timeOffsetLabel);
             this.lyricsTabPage.Location = new System.Drawing.Point(4, 22);
             this.lyricsTabPage.Name = "lyricsTabPage";
-            this.lyricsTabPage.Size = new System.Drawing.Size(274, 57);
+            this.lyricsTabPage.Size = new System.Drawing.Size(328, 94);
             this.lyricsTabPage.TabIndex = 2;
             this.lyricsTabPage.Text = "Lyrics";
             this.lyricsTabPage.UseVisualStyleBackColor = true;
@@ -276,13 +282,54 @@ namespace NumaLyrics.Forms
             this.timeOffsetLabel.TabIndex = 0;
             this.timeOffsetLabel.Text = "Time offset (ms)";
             // 
+            // controllerTabPage
+            // 
+            this.controllerTabPage.Controls.Add(this.controllerEditorButton);
+            this.controllerTabPage.Controls.Add(this.comComboBox);
+            this.controllerTabPage.Controls.Add(this.comLabel);
+            this.controllerTabPage.Location = new System.Drawing.Point(4, 22);
+            this.controllerTabPage.Name = "controllerTabPage";
+            this.controllerTabPage.Size = new System.Drawing.Size(328, 94);
+            this.controllerTabPage.TabIndex = 4;
+            this.controllerTabPage.Text = "Controller";
+            this.controllerTabPage.UseVisualStyleBackColor = true;
+            // 
+            // controllerEditorButton
+            // 
+            this.controllerEditorButton.Location = new System.Drawing.Point(5, 57);
+            this.controllerEditorButton.Name = "controllerEditorButton";
+            this.controllerEditorButton.Size = new System.Drawing.Size(127, 23);
+            this.controllerEditorButton.TabIndex = 3;
+            this.controllerEditorButton.Text = "Open Controller Editor";
+            this.controllerEditorButton.UseVisualStyleBackColor = true;
+            this.controllerEditorButton.Click += new System.EventHandler(this.controllerEditorButton_Click);
+            // 
+            // comComboBox
+            // 
+            this.comComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comComboBox.FormattingEnabled = true;
+            this.comComboBox.Location = new System.Drawing.Point(5, 20);
+            this.comComboBox.Name = "comComboBox";
+            this.comComboBox.Size = new System.Drawing.Size(80, 21);
+            this.comComboBox.TabIndex = 2;
+            this.comComboBox.SelectedValueChanged += new System.EventHandler(this.comComboBox_SelectedValueChanged);
+            // 
+            // comLabel
+            // 
+            this.comLabel.AutoSize = true;
+            this.comLabel.Location = new System.Drawing.Point(6, 4);
+            this.comLabel.Name = "comLabel";
+            this.comLabel.Size = new System.Drawing.Size(31, 13);
+            this.comLabel.TabIndex = 1;
+            this.comLabel.Text = "COM";
+            // 
             // featuresTabPage
             // 
             this.featuresTabPage.Controls.Add(this.nowPlayingCheckBox);
             this.featuresTabPage.Location = new System.Drawing.Point(4, 22);
             this.featuresTabPage.Name = "featuresTabPage";
             this.featuresTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.featuresTabPage.Size = new System.Drawing.Size(274, 57);
+            this.featuresTabPage.Size = new System.Drawing.Size(328, 94);
             this.featuresTabPage.TabIndex = 3;
             this.featuresTabPage.Text = "Features";
             this.featuresTabPage.UseVisualStyleBackColor = true;
@@ -302,12 +349,13 @@ namespace NumaLyrics.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(286, 91);
+            this.ClientSize = new System.Drawing.Size(343, 127);
             this.Controls.Add(this.tabControl);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PreferenceForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Preference";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PreferenceForm_FormClosing);
             this.Load += new System.EventHandler(this.PreferenceForm_Load);
@@ -325,6 +373,8 @@ namespace NumaLyrics.Forms
             this.lyricsTabPage.ResumeLayout(false);
             this.lyricsTabPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeOffset)).EndInit();
+            this.controllerTabPage.ResumeLayout(false);
+            this.controllerTabPage.PerformLayout();
             this.featuresTabPage.ResumeLayout(false);
             this.featuresTabPage.PerformLayout();
             this.ResumeLayout(false);
@@ -354,5 +404,9 @@ namespace NumaLyrics.Forms
         private System.Windows.Forms.Label timeOffsetLabel;
         private System.Windows.Forms.TabPage featuresTabPage;
         private System.Windows.Forms.CheckBox nowPlayingCheckBox;
+        private System.Windows.Forms.TabPage controllerTabPage;
+        private System.Windows.Forms.ComboBox comComboBox;
+        private System.Windows.Forms.Label comLabel;
+        private System.Windows.Forms.Button controllerEditorButton;
     }
 }

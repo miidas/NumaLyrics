@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 using Microsoft.Win32.SafeHandles;
 
@@ -14,9 +10,16 @@ namespace NumaLyrics.Utils
         public const uint MF_BYCOMMAND = 0x00000000;
         public const uint SC_CLOSE = 0xF060;
         public const int MY_CODE_PAGE = 437;
+        public const uint GENERIC_READ = 0x80000000;
         public const uint GENERIC_WRITE = 0x40000000;
-        public const uint FILE_SHARE_WRITE = 2;
+        public const uint FILE_SHARE_READ = 0x00000001;
+        public const uint FILE_SHARE_WRITE = 0x00000002;
         public const uint OPEN_EXISTING = 3;
+
+        public const int STD_OUTPUT_HANDLE = -11;
+        public const int STD_INPUT_HANDLE = -10;
+        public const uint ENABLE_QUICK_EDIT_MODE = 0x0040;
+        public const uint ENABLE_EXTENDED_FLAGS = 0x0080;
 
         public static class KERNEL32
         {
@@ -35,20 +38,26 @@ namespace NumaLyrics.Utils
             // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew
             [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
             public static extern IntPtr CreateFileW(
-             string lpFileName,
-             uint dwDesiredAccess,
-             uint dwShareMode,
-             IntPtr lpSecurityAttributes,
-             uint dwCreationDisposition,
-             uint dwFlagsAndAttributes,
-             IntPtr hTemplateFile
+                string lpFileName,
+                uint dwDesiredAccess,
+                uint dwShareMode,
+                IntPtr lpSecurityAttributes,
+                uint dwCreationDisposition,
+                uint dwFlagsAndAttributes,
+                IntPtr hTemplateFile
             );
 
-            public const int STD_OUTPUT_HANDLE = -11;
+            [DllImport("kernel32.dll")]
+            public static extern bool SetStdHandle(int nStdHandle, SafeFileHandle hHandle);
 
             [DllImport("kernel32.dll")]
-            public static extern bool SetStdHandle(int nStdHandle, SafeFileHandle handle);
+            public static extern IntPtr GetStdHandle(int nStdHandle);
 
+            [DllImport("kernel32.dll")]
+            public static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+
+            [DllImport("kernel32.dll")]
+            public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint lpMode);
         }
 
         public static class USER32
@@ -136,6 +145,21 @@ namespace NumaLyrics.Utils
             // https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-deleteobject
             [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
             public static extern bool DeleteObject(IntPtr ho);
+        }
+
+        public static class DBT
+        {
+            public const int WM_DEVICECHANGE = 0x219;
+            public const int DBT_DEVICEARRIVAL = 0x8000;
+            public const int DBT_DEVICEREMOVECOMPLETE = 0x8004;
+            public const int DBT_DEVTYP_PORT = 0x0003;
+
+            public struct DEV_BROADCAST_PORT
+            {
+                public uint dbcp_size;
+                public uint dbcp_devicetype;
+                public uint dbcp_reserved;
+            }
         }
     }
 }

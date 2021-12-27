@@ -37,6 +37,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
@@ -52,6 +53,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
+    <Compile Include="Configs\ButtonActionCollection.cs" />
+    <Compile Include="Configs\ButtonActionConfig.cs" />
+    <Compile Include="Configs\ControllerDeviceCollection.cs" />
+    <Compile Include="Configs\ControllerDeviceConfig.cs" />
+    <Compile Include="Configs\ControllerDeviceSection.cs" />
+    <Compile Include="Forms\ButtonActionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ButtonActionForm.Designer.cs">
+      <DependentUpon>ButtonActionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ControllerEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ControllerEditorForm.Designer.cs">
+      <DependentUpon>ControllerEditorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\LyricsEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -74,10 +92,17 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Lyrics\LyricsDisplay.cs" />
+    <Compile Include="Models\ControllerDevice.cs" />
     <Compile Include="Players\iTunes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Native.cs" />
+    <EmbeddedResource Include="Forms\ButtonActionForm.resx">
+      <DependentUpon>ButtonActionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ControllerEditorForm.resx">
+      <DependentUpon>ControllerEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\LyricsEditForm.resx">
       <DependentUpon>LyricsEditForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -136,5 +161,6 @@
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
