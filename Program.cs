@@ -110,10 +110,10 @@ namespace NumaLyrics
             DeleteMenu(GetSystemMenu(GetConsoleWindow(), false), SC_CLOSE, MF_BYCOMMAND);
 
             // Disable the quick edit mode
-            uint conMode;
+            /*uint conMode;
             GetConsoleMode(conIn, out conMode);
             conMode &= ~ENABLE_QUICK_EDIT_MODE;
-            SetConsoleMode(conIn, conMode);
+            SetConsoleMode(conIn, conMode);*/
         }
     }
 }
