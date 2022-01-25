@@ -49,8 +49,15 @@ namespace NumaLyrics.Models
                 }
                 else if (m.WParam.ToInt32() == DBT_DEVICEREMOVECOMPLETE)
                 {
-                    Logger.Debug("DISCONNECTED");
-                    NotifyToUser("Controller disconnected");
+                    // DBT_DEVICEREMOVECOMPLETE event
+                    // https://docs.microsoft.com/en-us/windows/win32/devio/dbt-deviceremovecomplete
+                    //
+                    int devType = Marshal.ReadInt32(m.LParam, 4);
+                    if (devType == DBT_DEVTYP_PORT)
+                    {
+                        Logger.Debug("DISCONNECTED");
+                        NotifyToUser("Controller disconnected");
+                    }
                 }
             }
         }
@@ -146,6 +153,9 @@ namespace NumaLyrics.Models
                             var track = (dynamic)itunes.getCurrentTrack();
                             NotifyToUser(track.Name);
                             break;
+                        case "DEBUG":
+                            itunes.Test2();
+                            break;
                         default:
                             break;
                     }
@@ -196,12 +206,12 @@ namespace NumaLyrics.Models
                 notifyWindow.Invoke((MethodInvoker)(() => {
                     notifyWindow.LyricsText = str;
                     notifyWindow.Redraw();
-                    if (!notifyWindow.Visible) notifyWindow.Show();
+                    notifyWindow.Show();
                 }));
                 System.Threading.Thread.Sleep(1000);
                 notifyWindow.Invoke((MethodInvoker)(() => {
                     if (notifyCounter != counter) return;
-                    if (notifyWindow.Visible) notifyWindow.Hide();
+                    notifyWindow.Hide();
                 }));
             });
         }
