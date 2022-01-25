@@ -50,6 +50,7 @@ namespace NumaLyrics.Lyrics
             this.LyricsText = str;
             this.FormBorderStyle = FormBorderStyle.None;
             this.StartPosition = FormStartPosition.Manual;
+            this.TopMost = true;
 
             // Get DpiY (4~8ms)
             if (gDpiY == -1)
