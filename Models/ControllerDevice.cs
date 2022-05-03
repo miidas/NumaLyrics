@@ -55,8 +55,12 @@ namespace NumaLyrics.Models
                     int devType = Marshal.ReadInt32(m.LParam, 4);
                     if (devType == DBT_DEVTYP_PORT)
                     {
-                        Logger.Debug("DISCONNECTED");
-                        NotifyToUser("Controller disconnected");
+                        string portName = Marshal.PtrToStringUni((IntPtr)(m.LParam.ToInt32() + Marshal.SizeOf(typeof(DEV_BROADCAST_PORT))));
+                        if (portName.Equals(AppConfig.ControllerCOMName))
+                        {
+                            Logger.Debug("DISCONNECTED");
+                            NotifyToUser("Controller disconnected");
+                        }
                     }
                 }
             }
